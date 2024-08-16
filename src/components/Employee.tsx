@@ -13,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import AddEmployee from "./AddEmployee";
-import axios from "axios";
 import UpdateEmployee from "./UpdateEmployee";
+import { deleteEmployee, fetchAllEmployees } from "@/utils/EmployeeService";
 
 // Define a type for Employee
 interface Employee {
@@ -36,49 +36,29 @@ export default function EmployeeComponent() {
     const [totalPages, setTotalPages] = useState(0);
     const [pageSize, setPageSize] = useState(5);
 
-    const fetchEmployees = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/getByAnyField", {
-                params: {
-                    empName: searchTerm,
-                    empDepartment: searchTerm,
-                    empTitle: searchTerm,
-                },
-            });
-            const data = response.data;
-            setEmployees(data);
-        } catch (error) {
-            console.error(error);
-        }
-    };
+
+    useEffect(() => {
+        paginatedEmployees();
+    }, [searchTerm, currentPage]);
 
     useEffect(() => {
         // Reset to page 1 whenever the search term changes
         setCurrentPage(1);
     }, [searchTerm]);
 
-    useEffect(() => {
-        paginatedEmployees();
-    }, [searchTerm, currentPage]);
 
     const handleEditEmployee = (empId: number) => {
         setSelectedEmployeeId(empId);
         setOpenUpdateEmployee(true);
     };
-    
+
 
     const paginatedEmployees = async () => {
         try {
-            const response = await axios.get("http://localhost:8080/searchEmployeeWithPaginated", {
-                params: {
-                    searchTerm: searchTerm,
-                    page: currentPage - 1, // Page should be zero-based
-                    size: pageSize,
-                },
-            });
-            const data = response.data.content;
+            const response = await fetchAllEmployees(searchTerm, currentPage, pageSize);
+            const data = response.content;
             setEmployees(data);
-            setTotalPages(Math.ceil(response.data.totalElements / pageSize));
+            setTotalPages(Math.ceil(response.totalElements / pageSize));
         } catch (error) {
             console.error(error);
         }
@@ -90,7 +70,7 @@ export default function EmployeeComponent() {
 
     const handleDeleteEmployee = async (empId: number) => {
         try {
-            await axios.delete(`http://localhost:8080/deleteEmployee/${empId}`);
+            await deleteEmployee(empId);
             toast({
                 variant: "success",
                 description: "Employee deleted successfully.. ✔️",

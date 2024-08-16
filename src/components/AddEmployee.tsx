@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast"
 import axios from 'axios';
+import { addEmployee } from '@/utils/EmployeeService';
 
 // Define a type for Employee
 interface Employee {
@@ -33,7 +34,7 @@ const AddEmployee: FC<AddEmployeeProps> = ({ openAddEmployee, setOpenAddEmployee
     });
     const handleAddEmployee = async () => {
         try {
-            await axios.post("http://localhost:8080/employee", newEmployee);
+            await addEmployee(newEmployee);
             toast({
                 variant: "success",
                 description: "Employee added successfully.. ✔️",
@@ -42,6 +43,12 @@ const AddEmployee: FC<AddEmployeeProps> = ({ openAddEmployee, setOpenAddEmployee
         } catch (error) {
             console.error(error);
         } finally {
+            setNewEmployee({
+                employeeName: "",
+                employeeEmail: "",
+                employeeDepartment: "",
+                employeeTitle: "",
+            });
             fetchEmployees();
         }
     };

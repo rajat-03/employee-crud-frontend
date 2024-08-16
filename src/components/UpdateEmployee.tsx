@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import axios from 'axios';
 import { toast } from './ui/use-toast';
+import { updateEmployee } from '@/utils/EmployeeService';
 
 interface Employee {
     employeeId?: number;
@@ -31,9 +32,9 @@ const UpdateEmployee: React.FC<UpdateEmployeeProps> = ({ openUpdateEmployee, set
         employeeDepartment: "",
         employeeTitle: "",
     });
-console.log("empId",empId);
+
     const fetchEmployeeDetails = async (empId: number) => {
-        console.log("inside");
+      
         try {
             const response = await axios.get(`http://localhost:8080/employeeById/${empId}`);
             console.log(response.data);
@@ -53,7 +54,7 @@ console.log("empId",empId);
 
     const handleUpdateEmployee = async () => {
         try {
-            await axios.put(`http://localhost:8080/updateEmployee/${empId}`, editingEmployee);
+           await updateEmployee(editingEmployee);
             toast({
                 variant: "success",
                 description: "Employee updated successfully.. ✔️",
