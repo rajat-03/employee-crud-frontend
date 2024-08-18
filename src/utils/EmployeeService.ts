@@ -2,7 +2,7 @@ import axios from "axios";
 import { Employee } from "./type";
 
 export const api = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: "https://employee-crud-backend-jmbc.onrender.com",
 });
 
 export const fetchEmployees = async () => {
@@ -17,6 +17,15 @@ export const fetchEmployees = async () => {
 export const addEmployee = async (employee: Employee) => {
     try {
         await api.post("/employee", employee);
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+export const getEmployeeById = async (empId: number) => {
+    try {
+        const response = await api.get(`/employeeById/${empId}`);
+        return response.data;
     } catch (error) {
         console.error(error);
     }

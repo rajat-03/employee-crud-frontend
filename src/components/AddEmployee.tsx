@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast"
-import axios from 'axios';
 import { addEmployee } from '@/utils/EmployeeService';
 
 // Define a type for Employee

@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import axios from 'axios';
 import { toast } from './ui/use-toast';
-import { updateEmployee } from '@/utils/EmployeeService';
+import { getEmployeeById, updateEmployee } from '@/utils/EmployeeService';
+
 
 interface Employee {
     employeeId?: number;
@@ -34,27 +34,26 @@ const UpdateEmployee: React.FC<UpdateEmployeeProps> = ({ openUpdateEmployee, set
     });
 
     const fetchEmployeeDetails = async (empId: number) => {
-      
+
         try {
-            const response = await axios.get(`http://localhost:8080/employeeById/${empId}`);
-            console.log(response.data);
-            setEditingEmployee(response.data);
+            const response = await getEmployeeById(empId);
+            setEditingEmployee(response);
         } catch (error: any) {
             console.error("Error fetching employee details:", error);
         }
     }
 
-    useEffect(() => { 
+    useEffect(() => {
         if (empId) { // Ensure empId is valid
             fetchEmployeeDetails(empId);
         }
     }, [empId]); // Include empId in the dependency array
-    
+
 
 
     const handleUpdateEmployee = async () => {
         try {
-           await updateEmployee(editingEmployee);
+            await updateEmployee(editingEmployee);
             toast({
                 variant: "success",
                 description: "Employee updated successfully.. ✔️",
@@ -66,6 +65,17 @@ const UpdateEmployee: React.FC<UpdateEmployeeProps> = ({ openUpdateEmployee, set
             fetchEmployees();
         }
     };
+
+    const handleCancelClick = () => {
+        setEditingEmployee({
+            employeeId: 0,
+            employeeName: "",
+            employeeEmail: "",
+            employeeDepartment: "",
+            employeeTitle: "",
+        });
+        setOpenUpdateEmployee(false);
+    }
 
 
     return (
@@ -134,7 +144,7 @@ const UpdateEmployee: React.FC<UpdateEmployeeProps> = ({ openUpdateEmployee, set
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setOpenUpdateEmployee(false)}
+                                onClick={handleCancelClick}
                             >
                                 Cancel
                             </Button>
