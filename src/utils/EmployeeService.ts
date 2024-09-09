@@ -2,7 +2,8 @@ import axios from "axios";
 import { Employee } from "./type";
 
 export const api = axios.create({
-    baseURL: "https://employee-crud-backend-jmbc.onrender.com",
+    baseURL: "https://employee-crud-backend-1.onrender.com",
+    // baseURL: "http://localhost:8080",
 });
 
 export const fetchEmployees = async () => {
@@ -39,9 +40,26 @@ export const updateEmployee = async (employee: Employee) => {
     }
 }
 
+
+// export const fetchAllEmployees = async (searchTerm: String, currentPage: number, pageSize: number) => {
+//     try {
+//         const response = await api.get("/searchEmployeeWithPaginated", {
+//             params: {
+//                 searchTerm: searchTerm,
+//                 page: currentPage - 1, // Page should be zero-based
+//                 size: pageSize,
+//             }
+//         });
+//         return response.data;
+//     } catch (error) {
+//         console.error(error);
+//     }
+// };
+
+// using JPQL query
 export const fetchAllEmployees = async (searchTerm: String, currentPage: number, pageSize: number) => {
     try {
-        const response = await api.get("/searchEmployeeWithPaginated", {
+        const response = await api.get("/getEmployeeList", {
             params: {
                 searchTerm: searchTerm,
                 page: currentPage - 1, // Page should be zero-based
@@ -61,3 +79,4 @@ export const deleteEmployee = async (empId: number) => {
         console.error(error);
     }
 };
+
